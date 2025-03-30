@@ -2,7 +2,7 @@
 - name: Launch Docker Container
   hosts: prod
   vars:
-    docker_image: "akash2061/Project-1"
+    docker_image: "akash2061/project-2"
     docker_tag: "latest"
     container_name: "con1"
     host_port: "80"
@@ -21,7 +21,11 @@
         state: absent
 
     - name: Remove all Docker images
-      shell: docker rmi -f $(docker images -qa)
+      shell: |
+        im=$(docker images -q)
+        if [ -n "$im" ]; then
+          docker rmi -f $im
+        fi
       ignore_errors: yes
 
     - name: Pull the Docker image
