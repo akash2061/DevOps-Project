@@ -1,23 +1,11 @@
-FROM centos:8
+FROM adoptopenjdk/openjdk11
+  
+EXPOSE 8080
+ 
+ENV APP_HOME /usr/src/app
 
-RUN rm -f /etc/yum.repos.d/*
+COPY target/*.jar $APP_HOME/app.jar
 
-WORKDIR /etc/yum.repos.d
+WORKDIR $APP_HOME
 
-COPY ./local.repo /etc/yum.repos.d/
-
-RUN yum install -y httpd zip wget
-
-WORKDIR /var/www/html
-
-RUN wget https://www.free-css.com/assets/files/free-css-templates/download/page290/brainwave.zip
-
-RUN unzip brainwave.zip
-
-RUN rm -f brainwave.zip &&\
-    cp -rf brainwave-html/* . &&\
-        rm -rf brainwave-html
-EXPOSE 80
-
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
-
+CMD ["java", "-jar", "app.jar"]
